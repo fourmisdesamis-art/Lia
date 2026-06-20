@@ -1,0 +1,333 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lia - Plateformes</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#050505;
+color:white;
+min-height:100vh;
+overflow-x:hidden;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at top left,#7a5cff33,transparent 30%),
+radial-gradient(circle at bottom right,#3d5cff33,transparent 30%);
+z-index:-2;
+}
+
+.topbar{
+height:90px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 40px;
+border-bottom:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+}
+
+.logo-area{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.logo{
+height:55px;
+}
+
+.logo-area h1{
+font-size:2rem;
+font-weight:800;
+background:linear-gradient(90deg,#a855f7,#3b82f6);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.user{
+background:#111;
+padding:12px 18px;
+border-radius:15px;
+border:1px solid rgba(139,92,246,.2);
+}
+
+.container{
+max-width:1400px;
+margin:auto;
+padding:60px 30px;
+}
+
+.title{
+text-align:center;
+margin-bottom:60px;
+}
+
+.title h2{
+font-size:3rem;
+margin-bottom:15px;
+}
+
+.title p{
+color:#bdbdbd;
+font-size:1.1rem;
+}
+
+.platforms{
+display:flex;
+justify-content:center;
+}
+
+.platform-card{
+
+width:550px;
+height:320px;
+
+border-radius:30px;
+
+overflow:hidden;
+
+cursor:pointer;
+
+position:relative;
+
+background:
+linear-gradient(
+rgba(0,0,0,.45),
+rgba(0,0,0,.65)
+),
+
+url("https://images.unsplash.com/photo-1635321593217-40050ad13c74?auto=format&fit=crop&w=1200&q=80");
+
+background-size:cover;
+background-position:center;
+
+transition:.35s;
+
+border:1px solid rgba(139,92,246,.25);
+
+box-shadow:
+0 0 25px rgba(139,92,246,.15);
+
+}
+
+.platform-card:hover{
+
+transform:
+translateY(-8px)
+scale(1.02);
+
+box-shadow:
+0 0 45px rgba(139,92,246,.35);
+
+}
+
+.overlay{
+
+position:absolute;
+inset:0;
+
+display:flex;
+flex-direction:column;
+justify-content:flex-end;
+
+padding:35px;
+
+}
+
+.platform-name{
+font-size:3rem;
+font-weight:800;
+}
+
+.platform-desc{
+font-size:1.1rem;
+color:#d4d4d4;
+margin-top:10px;
+}
+
+.badge{
+
+position:absolute;
+
+top:20px;
+right:20px;
+
+padding:8px 15px;
+
+border-radius:999px;
+
+background:#8b5cf6;
+
+font-size:.9rem;
+font-weight:600;
+
+}
+
+@media(max-width:768px){
+
+.title h2{
+font-size:2rem;
+}
+
+.platform-card{
+height:260px;
+}
+
+.platform-name{
+font-size:2rem;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+
+<div class="logo-area">
+
+<img src="Lia.png" class="logo">
+
+<h1>Lia</h1>
+
+</div>
+
+<div class="user">
+
+👤 <span id="pseudo">Chargement...</span>
+
+</div>
+
+</div>
+
+<div class="container">
+
+<div class="title">
+
+<h2>Sélectionnez une plateforme</h2>
+
+<p>
+Choisissez la plateforme que vous souhaitez gérer.
+</p>
+
+</div>
+
+<div class="platforms">
+
+<div class="platform-card" onclick="openLumalia()">
+
+<div class="badge">
+Disponible
+</div>
+
+<div class="overlay">
+
+<div class="platform-name">
+Lumalia
+</div>
+
+<div class="platform-desc">
+Réseau Minecraft • Gestion du serveur
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getFirestore,
+doc,
+getDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyBSCqSsBTXk9Q8sBX88NgrdDHUAHT0Cq6I",
+authDomain: "lumalia.firebaseapp.com",
+projectId: "lumalia"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+
+if(!user){
+
+window.location.href = "index.html";
+return;
+
+}
+
+try{
+
+const snap = await getDoc(
+doc(db,"users",user.uid)
+);
+
+if(snap.exists()){
+
+document.getElementById("pseudo").innerText =
+snap.data().pseudoMinecraft || "Utilisateur";
+
+}
+
+}catch(error){
+
+console.error(error);
+
+}
+
+});
+
+window.openLumalia = function(){
+
+window.location.href = "servers.html";
+
+}
+
+</script>
+
+</body>
+</html>
+```
