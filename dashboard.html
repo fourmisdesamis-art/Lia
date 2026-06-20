@@ -1,0 +1,316 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lia Dashboard</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#050505;
+color:white;
+min-height:100vh;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at top left,#7a5cff33,transparent 30%),
+radial-gradient(circle at bottom right,#3d5cff33,transparent 30%);
+z-index:-2;
+}
+
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:280px;
+height:100%;
+background:#0f0f0f;
+border-right:1px solid rgba(139,92,246,.2);
+padding:25px;
+}
+
+.logo{
+width:80px;
+display:block;
+margin:auto;
+margin-bottom:20px;
+}
+
+.sidebar h1{
+text-align:center;
+margin-bottom:30px;
+background:linear-gradient(90deg,#a855f7,#3b82f6);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.menu{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.menu button{
+padding:15px;
+border:none;
+border-radius:12px;
+background:#171717;
+color:white;
+cursor:pointer;
+transition:.3s;
+}
+
+.menu button:hover{
+background:#8b5cf6;
+}
+
+.main{
+margin-left:280px;
+padding:40px;
+}
+
+.card{
+background:#101010;
+border:1px solid rgba(139,92,246,.2);
+border-radius:20px;
+padding:25px;
+margin-bottom:25px;
+}
+
+.card h2{
+margin-bottom:15px;
+}
+
+.info{
+margin-bottom:10px;
+font-size:18px;
+}
+
+.label{
+color:#9b5cff;
+font-weight:bold;
+}
+
+.logout{
+background:#ef4444;
+border:none;
+padding:15px 25px;
+border-radius:12px;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.modules{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.module{
+background:#111111;
+padding:25px;
+border-radius:20px;
+border:1px solid rgba(139,92,246,.15);
+transition:.3s;
+cursor:pointer;
+}
+
+.module:hover{
+transform:translateY(-4px);
+border-color:#8b5cf6;
+}
+
+.module h3{
+margin-bottom:10px;
+}
+
+.module p{
+color:#bdbdbd;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<img src="Lia.png" class="logo">
+
+<h1>Lia</h1>
+
+<div class="menu">
+<button>🏠 Dashboard</button>
+<button>📰 Actualités</button>
+<button>👥 Staff</button>
+<button>📢 Annonces</button>
+<button>📄 Candidatures</button>
+<button>⚙️ Paramètres</button>
+</div>
+
+</div>
+
+<div class="main">
+
+<div class="card">
+
+<h2>Profil</h2>
+
+<div class="info">
+<span class="label">Email :</span>
+<span id="email">Chargement...</span>
+</div>
+
+<div class="info">
+<span class="label">Pseudo Minecraft :</span>
+<span id="pseudo">Chargement...</span>
+</div>
+
+<div class="info">
+<span class="label">Rang :</span>
+<span id="rang">Chargement...</span>
+</div>
+
+<br>
+
+<button class="logout" onclick="logout()">
+Déconnexion
+</button>
+
+</div>
+
+<h2 style="margin-bottom:20px;">
+Administration Lia
+</h2>
+
+<div class="modules">
+
+<div class="module">
+<h3>📰 Actualités</h3>
+<p>Créer et gérer les actualités.</p>
+</div>
+
+<div class="module">
+<h3>👥 Staff</h3>
+<p>Gestion des membres du staff.</p>
+</div>
+
+<div class="module">
+<h3>📢 Annonces</h3>
+<p>Publier des annonces importantes.</p>
+</div>
+
+<div class="module">
+<h3>📄 Candidatures</h3>
+<p>Voir les candidatures reçues.</p>
+</div>
+
+<div class="module">
+<h3>⚙️ Paramètres</h3>
+<p>Configuration de Lia.</p>
+</div>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+import {
+getFirestore,
+doc,
+getDoc
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyBSCqSsBTXk9Q8sBX88NgrdDHUAHT0Cq6I",
+authDomain: "lumalia.firebaseapp.com",
+projectId: "lumalia"
+
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+
+if(!user){
+
+window.location.href = "index.html";
+return;
+
+}
+
+document.getElementById("email").innerText =
+user.email;
+
+try{
+
+const snap = await getDoc(
+doc(db,"users",user.uid)
+);
+
+if(snap.exists()){
+
+const data = snap.data();
+
+document.getElementById("pseudo").innerText =
+data.pseudoMinecraft || "Non défini";
+
+document.getElementById("rang").innerText =
+data.rang || "Joueur";
+
+}
+
+}
+catch(error){
+
+console.error(error);
+
+}
+
+});
+
+window.logout = async function(){
+
+await signOut(auth);
+
+window.location.href = "index.html";
+
+};
+
+</script>
+
+</body>
+</html>
+```
