@@ -344,8 +344,16 @@ doc(db,"users",user.uid)
 
 if(snap.exists()){
 
+const data = snap.data();
+
+const pseudo =
+data.pseudoMinecraft?.trim() || "Utilisateur";
+
 document.getElementById("pseudo").innerText =
-snap.data().pseudoMinecraft || "Utilisateur";
+pseudo;
+
+document.getElementById("skin").src =
+`https://mc-heads.net/avatar/${pseudo}/100`;
 
 }
 
@@ -360,18 +368,6 @@ console.error(error);
 window.openLumalia = function(){
 
 window.location.href = "servers.html";
-
-}
-
-if(snap.exists()){
-
-const data = snap.data();
-
-document.getElementById("pseudo").innerText =
-data.pseudoMinecraft;
-
-document.getElementById("skin").src =
-`https://mc-heads.net/avatar/${data.pseudoMinecraft}/100`;
 
 }
 
