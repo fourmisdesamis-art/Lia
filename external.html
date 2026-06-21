@@ -1,0 +1,349 @@
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vous quittez Lia</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+
+background:#050505;
+
+min-height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+color:white;
+
+overflow:hidden;
+
+}
+
+body::before{
+
+content:"";
+
+position:fixed;
+inset:0;
+
+background:
+radial-gradient(circle at top left,#7a5cff33,transparent 30%),
+radial-gradient(circle at bottom right,#3d5cff33,transparent 30%);
+
+z-index:-1;
+
+}
+
+.card{
+
+width:90%;
+max-width:700px;
+
+background:rgba(12,12,12,.9);
+
+border:1px solid rgba(139,92,246,.2);
+
+border-radius:30px;
+
+padding:35px;
+
+box-shadow:
+0 0 40px rgba(139,92,246,.12);
+
+}
+
+.badge{
+
+display:inline-block;
+
+padding:8px 14px;
+
+border-radius:999px;
+
+background:rgba(245,158,11,.15);
+
+border:1px solid rgba(245,158,11,.4);
+
+color:#f59e0b;
+
+font-size:.85rem;
+font-weight:600;
+
+margin-bottom:20px;
+
+}
+
+h1{
+
+font-size:2.2rem;
+
+margin-bottom:15px;
+
+background:linear-gradient(
+90deg,
+#a855f7,
+#3b82f6
+);
+
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.desc{
+
+color:#bdbdbd;
+
+line-height:1.6;
+
+margin-bottom:25px;
+
+}
+
+.redirect-box{
+
+background:#171717;
+
+padding:20px;
+
+border-radius:20px;
+
+border:1px solid rgba(255,255,255,.05);
+
+margin-bottom:20px;
+
+}
+
+.redirect-box h3{
+
+margin-bottom:10px;
+
+}
+
+.timer{
+
+color:#8b5cf6;
+font-weight:700;
+
+}
+
+.destination{
+
+background:#171717;
+
+padding:20px;
+
+border-radius:20px;
+
+margin-bottom:30px;
+
+border:1px solid rgba(255,255,255,.05);
+
+}
+
+.label{
+
+font-size:.9rem;
+color:#888;
+
+margin-bottom:10px;
+
+}
+
+.site{
+
+font-size:1.3rem;
+font-weight:700;
+margin-bottom:5px;
+
+}
+
+.url{
+
+color:#bbb;
+word-break:break-all;
+
+}
+
+.buttons{
+
+display:flex;
+justify-content:flex-end;
+gap:15px;
+
+}
+
+.cancel{
+
+padding:14px 22px;
+
+border-radius:12px;
+
+border:1px solid rgba(255,255,255,.1);
+
+background:#151515;
+
+color:white;
+
+cursor:pointer;
+
+}
+
+.continue{
+
+padding:14px 22px;
+
+border:none;
+
+border-radius:12px;
+
+background:linear-gradient(
+90deg,
+#5b4dff,
+#9b5cff
+);
+
+color:white;
+
+font-weight:600;
+
+cursor:pointer;
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="card">
+
+<div class="badge">
+↗ Destination externe
+</div>
+
+<h1>Vous quittez Lia</h1>
+
+<p class="desc">
+La page suivante est hébergée en dehors de Lia.
+Vérifiez la destination avant de continuer.
+</p>
+
+<div class="redirect-box">
+
+<h3>
+Redirection automatique
+(<span class="timer" id="timer">5</span>s)
+</h3>
+
+<p>
+Vous serez redirigé automatiquement.
+</p>
+
+</div>
+
+<div class="destination">
+
+<div class="label">
+DESTINATION
+</div>
+
+<div class="site" id="site">
+Chargement...
+</div>
+
+<div class="url" id="url">
+Chargement...
+</div>
+
+</div>
+
+<div class="buttons">
+
+<button
+class="cancel"
+onclick="history.back()">
+Rester sur Lia
+</button>
+
+<button
+class="continue"
+onclick="go()">
+Continuer
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const params =
+new URLSearchParams(window.location.search);
+
+const target =
+params.get("url");
+
+const name =
+params.get("name");
+
+document.getElementById("site").innerText =
+name || "Site externe";
+
+document.getElementById("url").innerText =
+target || "Aucune URL";
+
+let time = 5;
+
+const interval = setInterval(() => {
+
+time--;
+
+document.getElementById("timer").innerText =
+time;
+
+if(time <= 0){
+
+clearInterval(interval);
+
+if(target){
+
+window.location.href =
+target;
+
+}
+
+}
+
+},1000);
+
+window.go = function(){
+
+if(target){
+
+window.location.href =
+target;
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
+```
