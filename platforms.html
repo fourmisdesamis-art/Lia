@@ -182,6 +182,35 @@ font-weight:600;
 
 }
 
+.user{
+
+display:flex;
+align-items:center;
+gap:12px;
+
+background:#111;
+
+padding:10px 15px;
+
+border-radius:16px;
+
+border:1px solid rgba(139,92,246,.2);
+
+}
+
+.skin{
+
+width:42px;
+height:42px;
+
+border-radius:50%;
+
+border:3px solid #222;
+
+object-fit:cover;
+
+}
+
 @media(max-width:768px){
 
 .title h2{
@@ -331,6 +360,18 @@ console.error(error);
 window.openLumalia = function(){
 
 window.location.href = "servers.html";
+
+}
+
+if(snap.exists()){
+
+const data = snap.data();
+
+document.getElementById("pseudo").innerText =
+data.pseudoMinecraft;
+
+document.getElementById("skin").src =
+`https://mc-heads.net/avatar/${data.pseudoMinecraft}/100`;
 
 }
 
